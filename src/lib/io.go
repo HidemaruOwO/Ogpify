@@ -6,6 +6,7 @@ import (
 	"image"
 	"image/png"
 	"os"
+	"path/filepath"
 
 	"github.com/fatih/color"
 )
@@ -37,4 +38,40 @@ func CreateImageFile(path string, image image.Image) {
 	defer file.Close()
 
 	file.Write(buf.Bytes())
+}
+
+func Intialize() {
+	publicDir := filepath.Join("public")
+
+	if _, err := os.Stat(publicDir); os.IsNotExist(err) {
+		os.Mkdir(publicDir, 0755)
+	}
+
+	publicImageDir := filepath.Join("public", "image")
+	if _, err := os.Stat(publicImageDir); os.IsNotExist(err) {
+		os.MkdirAll(publicImageDir, 0755)
+	} else {
+		RemoveFiles(publicImageDir)
+	}
+
+	fmt.Printf("Intialized!!\n")
+}
+
+func RemoveFiles(dir string) error {
+	d, err := os.Open(dir)
+	if err != nil {
+		return err
+	}
+	defer d.Close()
+	names, err := d.Readdirnames(-1)
+	if err != nil {
+		return err
+	}
+	for _, name := range names {
+		err = os.RemoveAll(filepath.Join(dir, name))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
