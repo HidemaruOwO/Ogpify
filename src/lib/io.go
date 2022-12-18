@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"image"
 	"image/png"
+	"math/rand"
 	"os"
 	"path/filepath"
 
@@ -74,4 +75,24 @@ func RemoveFiles(dir string) error {
 		}
 	}
 	return nil
+}
+
+func RandomString(num int) string {
+	letter := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
+	str := make([]rune, num)
+	for i := range str {
+		str[i] = letter[rand.Intn(len(letter))]
+	}
+
+	return string(str)
+}
+
+func ApiDomain() string {
+	return "https://ogp-api.v-sli.me"
+}
+
+func WebDomain() string {
+	return "https://v-sli.me"
+
 }

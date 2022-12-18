@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/color"
 	"io/ioutil"
+	"path/filepath"
 	"unicode/utf8"
 
 	"github.com/golang/freetype/truetype"
@@ -24,7 +25,9 @@ func ImageCreate(text string, options *ImageCreateOptions) image.Image {
 	}
 	fmt.Printf("text: %s, textfont: %s\n", text, textFont)
 
-	fontBinary, err := ioutil.ReadFile("./fonts/Koruri-Bold.ttf")
+	fontPath := filepath.Join("fonts/Koruri-Bold.ttf")
+
+	fontBinary, err := ioutil.ReadFile(fontPath)
 	if err != nil {
 		Error(err)
 		return nil
