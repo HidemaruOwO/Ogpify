@@ -7,7 +7,7 @@
 ![Bug Issues](https://img.shields.io/github/issues/HidemaruOwO/ogp-generate-api/bug?style=flat-square)
 
 # OGP Generate API 🔖
-
+v1.0.0-beta1
 ## なんだこれは
 
 この API に任意のテキストを含めて POST をすると、そのテキストを埋め込んだサイト用の OGP を生成します。
