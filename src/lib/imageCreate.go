@@ -17,13 +17,44 @@ type ImageCreateOptions struct {
 	Font *string
 }
 
-func ImageCreate(text string, options *ImageCreateOptions) image.Image {
+func ImageCreate(text string, options *ImageCreateOptions) (image.Image, error) {
 	//Optionのハンドル
 	textFont := "Koruri-Bold.ttf"
 	if options.Font != nil {
 		textFont = *options.Font
 	}
 	fmt.Printf("text: %s, textfont: %s\n", text, textFont)
+
+	textLength := utf8.RuneCountInString(text)
+
+	if textLength > 45 {
+		// 45文字以上の場合
+		return nil, fmt.Errorf("Text must be 45 characters or less")
+	} else if textLength > 30 {
+		texts := SplitText(text)
+
+		one := imagesCreate(texts[0], textFont)
+		two := imagesCreate(texts[1], textFont)
+		twoFontSize := fontSize(texts[1])
+		three := imagesCreate(texts[2], textFont)
+		oneSynTwo := createdImageSynthetic(one, two, twoFontSize)
+		syntheticed := createdImageSynthetic(oneSynTwo, three, twoFontSize+fontSize(texts[2]))
+
+		return syntheticed, nil
+	} else if textLength > 15 {
+		texts := SplitText(text)
+
+		one := imagesCreate(texts[0], textFont)
+		two := imagesCreate(texts[1], textFont)
+		twoFontSize := fontSize(texts[1])
+		syntheticed := createdImageSynthetic(one, two, twoFontSize)
+		return syntheticed, nil
+	} else {
+		return imagesCreate(text, textFont), nil
+	}
+}
+
+func imagesCreate(text string, fontName string) image.Image {
 
 	fontPath := filepath.Join("fonts/Koruri-Bold.ttf")
 
@@ -70,6 +101,7 @@ func ImageCreate(text string, options *ImageCreateOptions) image.Image {
 	fontDrawer.DrawString(text)
 
 	return img
+
 }
 
 func fontSize(text string) float64 {

@@ -94,5 +94,18 @@ func ApiDomain() string {
 
 func WebDomain() string {
 	return "https://v-sli.me"
+}
 
+func SplitText(text string) []string {
+	array := []string{}
+	splitlen := 15
+	runes := []rune(text)
+	for i := 0; i < len(runes); i += splitlen {
+		if i+splitlen < len(runes) {
+			array = append(array, string(runes[i:(i+splitlen)]))
+		} else {
+			array = append(array, string(runes[i:]))
+		}
+	}
+	return array
 }
