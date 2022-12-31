@@ -58,11 +58,10 @@ func generateHandler(c echo.Context) error {
 
 	font := "nemui"
 
-	charImage := lib.ImageCreate(post.Text, &lib.ImageCreateOptions{Font: &font})
-	if charImage == nil {
-		errMessage := "文字を元に画像を生成することにてエラーが発生しました。"
-		lib.Error(fmt.Errorf(errMessage))
-		return c.String(http.StatusInternalServerError, errMessage)
+	charImage, err := lib.ImageCreate(post.Text, &lib.ImageCreateOptions{Font: &font})
+	if err != nil {
+		lib.Error(err)
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
 	syntheticImage := lib.ImageSynthetic(charImage)
