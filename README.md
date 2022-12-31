@@ -7,22 +7,39 @@
 ![Bug Issues](https://img.shields.io/github/issues/HidemaruOwO/ogp-generate-api/bug?style=flat-square)
 
 # OGP Generate API 🔖
-
+v1.0.0-beta1
 ## なんだこれは
 
 この API に任意のテキストを含めて POST をすると、そのテキストを埋め込んだサイト用の OGP を生成します。
 
 </div>
 
-# 🚧 WIP!!
-
-このプロジェクトは現在リリース前開発中です。使用しないでください。
-
 ## 🚀 使い方
 
-### 💨 ビルド
+[Release](/release)に Linux 及び MacOS 用のビルド済みバイナリがあるので、それをダウンロードして実行してください。
 
-#### リポジトリのクローン
+```bash
+./ogp
+```
+
+これでサーバーが起動します。
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"text" : "これはテストです"}' http://127.0.0.1:3090/generate
+```
+
+### ✈️ POST データ
+
+```json
+{
+  "text": "こちらに45文字以内の文字を入力",
+  "font": "(任意)base64エンコードしたフォントデータを入力"
+}
+```
+
+## 💨 ビルド
+
+### リポジトリのクローン
 
 ```bash
 git clone https://github.com/HidemaruOwO/ogp-generate-api.git
