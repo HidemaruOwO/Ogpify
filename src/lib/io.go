@@ -8,19 +8,10 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/fatih/color"
 )
-
-func Error(err error) {
-	errorMessage := color.RedString(err.Error())
-	fmt.Fprintf(os.Stderr, errorMessage+"\n")
-}
-
-func ErrorExit(err error) {
-	Error(err)
-	os.Exit(1)
-}
 
 func CreateImageFile(path string, image image.Image) {
 	buf := &bytes.Buffer{}
@@ -92,9 +83,9 @@ func Domain2Url(domain string) string {
 	return "https://" + domain
 }
 
-func SplitText(text string) []string {
+// Turn array and index
+func SplitText(text string, splitlen int) ([]string, int) {
 	array := []string{}
-	splitlen := 15
 	runes := []rune(text)
 	for i := 0; i < len(runes); i += splitlen {
 		if i+splitlen < len(runes) {
@@ -103,9 +94,49 @@ func SplitText(text string) []string {
 			array = append(array, string(runes[i:]))
 		}
 	}
-	return array
+	return array, len(array)
+}
+
+// Turn array and index
+func SplitCharText(text string, char string) ([]string, int) {
+	array := strings.Split(text, char)
+
+	return array, len(array)
 }
 
 func Version() string {
 	return "v1.0-beta2"
+}
+
+func Infof(format string, a ...any) {
+	logType := color.HiCyanString("INFO")
+	fmt.Printf("[%s] %s", logType, fmt.Sprintf(format, a...))
+}
+
+func Error(err error) {
+	logType := color.RedString("ERROR")
+	errorMessage := color.RedString(err.Error())
+	fmt.Fprintf(os.Stderr, "[%s] %s", logType, errorMessage)
+}
+
+func ErrorExit(err error) {
+	Error(err)
+	os.Exit(1)
+}
+
+func Warnf(format string, a ...any) {
+	logType := color.HiYellowString("WARN")
+	fmt.Printf("[%s] %s", logType, fmt.Sprintf(format, a...))
+}
+
+func Criticalf(format string, a ...any) {
+	logType := color.HiMagentaString("CRITICAL")
+	fmt.Printf("[%s] %s", logType, fmt.Sprintf(format, a...))
+}
+
+func Debugf(isDebug bool, format string, a ...any) {
+	if isDebug {
+		logType := color.HiGreenString("DEBUG")
+		fmt.Printf("[%s] %s", logType, fmt.Sprintf(format, a...))
+	}
 }

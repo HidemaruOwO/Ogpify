@@ -16,6 +16,7 @@ import (
 type CmdOptions struct {
 	optApiDomain string
 	optWebDomain string
+	optDebug     bool
 }
 
 var o = &CmdOptions{}
@@ -42,6 +43,7 @@ func init() {
 	RootCmd.AddCommand()
 	RootCmd.Flags().StringVarP(&o.optApiDomain, "api-domain", "a", "", "API Domain option (Example: api.ogc.v-sli.me)")
 	RootCmd.Flags().StringVarP(&o.optWebDomain, "page-domain", "p", "", "Domain of the site used for the Post (Example: ogc.v-sli.me)")
+	RootCmd.Flags().BoolVarP(&o.optDebug, "debug", "d", false, "Enable this flag causes logging in debug mode")
 }
 
 func server() {
@@ -91,7 +93,7 @@ func generateHandler(c echo.Context) error {
 
 	font := "nemui"
 
-	charImage, err := lib.ImageCreate(post.Text, &lib.ImageCreateOptions{Font: &font})
+	charImage, err := lib.ImageCreate(post.Text, o.optDebug, &lib.ImageCreateOptions{Font: &font})
 	if err != nil {
 		lib.Error(err)
 		return c.String(http.StatusInternalServerError, err.Error())
@@ -117,7 +119,7 @@ func generateHandler(c echo.Context) error {
 	responseJson, err := json.Marshal(responseStruct)
 
 	if err != nil {
-		errMessage := "JSONの変換にてエラーが発生したため処理を終了します。"
+		errMessage := "An error occurred during conversion to JSON"
 		lib.Error(fmt.Errorf(errMessage))
 		return c.JSON(http.StatusInternalServerError, errMessage)
 	}

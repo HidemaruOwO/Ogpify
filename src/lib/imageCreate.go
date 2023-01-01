@@ -17,13 +17,16 @@ type ImageCreateOptions struct {
 	Font *string
 }
 
-func ImageCreate(text string, options *ImageCreateOptions) (image.Image, error) {
+func ImageCreate(text string, isDebug bool, options *ImageCreateOptions) (image.Image, error) {
 	//Optionのハンドル
 	textFont := "Koruri-Bold.ttf"
 	if options.Font != nil {
 		textFont = *options.Font
 	}
-	fmt.Printf("text: %s, textfont: %s\n", text, textFont)
+
+	Infof("text: %s, textfont: %s\n", text, textFont)
+
+  
 
 	textLength := utf8.RuneCountInString(text)
 
@@ -31,7 +34,8 @@ func ImageCreate(text string, options *ImageCreateOptions) (image.Image, error) 
 		// 45文字以上の場合
 		return nil, fmt.Errorf("Text must be 45 characters or less")
 	} else if textLength > 30 {
-		texts := SplitText(text)
+
+		texts, _ := SplitText(text, 15)
 
 		one := imagesCreate(texts[0], textFont)
 		two := imagesCreate(texts[1], textFont)
@@ -42,7 +46,7 @@ func ImageCreate(text string, options *ImageCreateOptions) (image.Image, error) 
 
 		return syntheticed, nil
 	} else if textLength > 15 {
-		texts := SplitText(text)
+		texts, _ := SplitText(text, 15)
 
 		one := imagesCreate(texts[0], textFont)
 		two := imagesCreate(texts[1], textFont)
