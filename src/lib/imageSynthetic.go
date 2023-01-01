@@ -28,3 +28,16 @@ func ImageSynthetic(charImage image.Image) image.Image {
 
 	return img
 }
+
+func createdImageSynthetic(one image.Image, two image.Image, fontSize float64) image.Image {
+	charStartPoint := image.Point{0, int(fontSize)}
+
+	charRectangle := image.Rectangle{charStartPoint, charStartPoint.Add(one.Bounds().Size())}
+	originRectangle := image.Rectangle{image.Point{0, 0}, one.Bounds().Size()}
+
+	img := image.NewRGBA(originRectangle)
+	draw.Draw(img, originRectangle, one, image.Point{0, 0}, draw.Src)
+	draw.Draw(img, charRectangle, two, image.Point{0, 0}, draw.Over)
+
+	return img
+}

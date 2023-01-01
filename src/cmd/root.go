@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"encoding/json"
@@ -7,17 +7,52 @@ import (
 	"path/filepath"
 
 	"github.com/HidemaruOwO/OGP-Generate-API/src/lib"
+	"github.com/fatih/color"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/spf13/cobra"
 )
 
-func main() {
+type CmdOptions struct {
+	optApiDomain string
+	optWebDomain string
+	optDebug     bool
+}
+
+var o = &CmdOptions{}
+
+var RootCmd = &cobra.Command{
+	Run: func(cmd *cobra.Command, args []string) {
+		if o.optApiDomain != "" && o.optWebDomain != "" {
+			server()
+		} else if o.optWebDomain != "" {
+			fmt.Printf("Need --api-domain flag\n")
+		} else if o.optApiDomain != "" {
+			fmt.Printf("Need --page-domain flag\n")
+		} else {
+			fmt.Printf("OGC %s\n", lib.Version())
+			fmt.Printf("✨ Thank you for installing OGC!!\n")
+			fmt.Printf("Please run the help command for usage. \nRun:\n")
+			color.New(color.Bold).Printf("\t" + color.BlueString("$ ") + "ogc --help\n")
+		}
+	},
+}
+
+func init() {
+	cobra.OnInitialize()
+	RootCmd.AddCommand()
+	RootCmd.Flags().StringVarP(&o.optApiDomain, "api-domain", "a", "", "API Domain option (Example: api.ogc.v-sli.me)")
+	RootCmd.Flags().StringVarP(&o.optWebDomain, "page-domain", "p", "", "Domain of the site used for the Post (Example: ogc.v-sli.me)")
+	RootCmd.Flags().BoolVarP(&o.optDebug, "debug", "d", false, "Enable this flag causes logging in debug mode")
+}
+
+func server() {
 	lib.Intialize()
 
 	e := echo.New()
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{lib.WebDomain(), lib.ApiDomain()},
+		AllowOrigins: []string{lib.Domain2Url(o.optWebDomain), lib.Domain2Url(o.optApiDomain)},
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
@@ -58,11 +93,10 @@ func generateHandler(c echo.Context) error {
 
 	font := "nemui"
 
-	charImage := lib.ImageCreate(post.Text, &lib.ImageCreateOptions{Font: &font})
-	if charImage == nil {
-		errMessage := "文字を元に画像を生成することにてエラーが発生しました。"
-		lib.Error(fmt.Errorf(errMessage))
-		return c.String(http.StatusInternalServerError, errMessage)
+	charImage, err := lib.ImageCreate(post.Text, o.optDebug, &lib.ImageCreateOptions{Font: &font})
+	if err != nil {
+		lib.Error(err)
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
 	syntheticImage := lib.ImageSynthetic(charImage)
@@ -79,13 +113,13 @@ func generateHandler(c echo.Context) error {
 	lib.CreateImageFile(imagePath, syntheticImage)
 
 	responseStruct := responseGenerateJson{
-		URL: lib.ApiDomain() + "/" + imagePath,
+		URL: lib.Domain2Url(o.optApiDomain) + "/" + imagePath,
 	}
 
 	responseJson, err := json.Marshal(responseStruct)
 
 	if err != nil {
-		errMessage := "JSONの変換にてエラーが発生したため処理を終了します。"
+		errMessage := "An error occurred during conversion to JSON"
 		lib.Error(fmt.Errorf(errMessage))
 		return c.JSON(http.StatusInternalServerError, errMessage)
 	}
