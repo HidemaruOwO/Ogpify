@@ -88,12 +88,8 @@ func RandomString(num int) string {
 	return string(str)
 }
 
-func ApiDomain() string {
-	return "https://ogp-api.v-sli.me"
-}
-
-func WebDomain() string {
-	return "https://v-sli.me"
+func Domain2Url(domain string) string {
+	return "https://" + domain
 }
 
 func SplitText(text string) []string {
@@ -108,4 +104,8 @@ func SplitText(text string) []string {
 		}
 	}
 	return array
+}
+
+func Version() string {
+	return "v1.0-beta2"
 }
