@@ -21,8 +21,8 @@ v1.0-beta1
 ### リポジトリのクローン
 
 ```bash
-git clone https://github.com/HidemaruOwO/ogp-generate-api.git
-cd ogp-generate-api
+git clone https://github.com/HidemaruOwO/OGP-Create
+cd ogp-create
 ```
 
 ### サーバーの起動
