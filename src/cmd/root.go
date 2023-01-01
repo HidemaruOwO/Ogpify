@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"encoding/json"
@@ -7,17 +7,50 @@ import (
 	"path/filepath"
 
 	"github.com/HidemaruOwO/OGP-Generate-API/src/lib"
+	"github.com/fatih/color"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/spf13/cobra"
 )
 
-func main() {
+type CmdOptions struct {
+	optApiDomain string
+	optWebDomain string
+}
+
+var o = &CmdOptions{}
+
+var RootCmd = &cobra.Command{
+	Run: func(cmd *cobra.Command, args []string) {
+		if o.optApiDomain != "" && o.optWebDomain != "" {
+			server()
+		} else if o.optWebDomain != "" {
+			fmt.Printf("Need --api-domain flag\n")
+		} else if o.optApiDomain != "" {
+			fmt.Printf("Need --page-domain flag\n")
+		} else {
+			fmt.Printf("OGC %s\n", lib.Version())
+			fmt.Printf("✨ Thank you for installing OGC!!\n")
+			fmt.Printf("Please run the help command for usage. \nRun:\n")
+			color.New(color.Bold).Printf("\t" + color.BlueString("$ ") + "ogc --help\n")
+		}
+	},
+}
+
+func init() {
+	cobra.OnInitialize()
+	RootCmd.AddCommand()
+	RootCmd.Flags().StringVarP(&o.optApiDomain, "api-domain", "a", "", "API Domain option (Example: api.ogc.v-sli.me)")
+	RootCmd.Flags().StringVarP(&o.optWebDomain, "page-domain", "p", "", "Domain of the site used for the Post (Example: ogc.v-sli.me)")
+}
+
+func server() {
 	lib.Intialize()
 
 	e := echo.New()
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{lib.WebDomain(), lib.ApiDomain()},
+		AllowOrigins: []string{lib.Domain2Url(o.optWebDomain), lib.Domain2Url(o.optApiDomain)},
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
@@ -78,7 +111,7 @@ func generateHandler(c echo.Context) error {
 	lib.CreateImageFile(imagePath, syntheticImage)
 
 	responseStruct := responseGenerateJson{
-		URL: lib.ApiDomain() + "/" + imagePath,
+		URL: lib.Domain2Url(o.optApiDomain) + "/" + imagePath,
 	}
 
 	responseJson, err := json.Marshal(responseStruct)
