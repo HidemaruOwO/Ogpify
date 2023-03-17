@@ -6,7 +6,7 @@
 ![Open Issues](https://img.shields.io/github/issues-raw/HidemaruOwO/ogp-generate-api?style=flat-square)
 ![Bug Issues](https://img.shields.io/github/issues/HidemaruOwO/ogp-generate-api/bug?style=flat-square)
 
-# OGP Create 🔖
+# OGPify 🔖
 
 v1.0-beta2
 
