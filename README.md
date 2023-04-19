@@ -39,7 +39,6 @@ CORS 対応のため、`--page-domain`及び`--api-domain`フラグが必要で�
 ローカルで完結させたい場合は不要です。  
 `example.com`などの適当な値を代入してください
 
-
 ```bash
 ./ogpify --api-domain api.ogpify.v-sli.me --page-domain ogpify.v-sli.me
 ```
@@ -48,7 +47,6 @@ CORS 対応のため、`--page-domain`及び`--api-domain`フラグが必要で�
 試しに何かしら POST してみてください。
 
 デフォルトポートは`3090`です。
-
 
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{"text" : "これはテストです"}' http://127.0.0.1:3090/generate
@@ -71,17 +69,8 @@ Flags:
 
 ```json
 {
-  "text": "こちらに45文字以内の文章を入力"
+    "text": "こちらに45文字以内の文章を入力"
 }
-```
-
-## ⛏️ 開発
-
-このリポジトリの開発ブランチは`develop`ブランチです。<br/>
-PR を送る場合は`develop`ブランチに送っていただくと助かります。
-
-```bash
-git checkout develop
 ```
 
 ## 📜 ライセンス
