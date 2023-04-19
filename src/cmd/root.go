@@ -92,8 +92,9 @@ func rootHandler(c echo.Context) error {
 }
 
 type generateJson struct {
-	Text string `json:"text"`
-	Font string `json:"font"`
+	Text      string `json:"text"`
+	Font      string `json:"font"`
+	SingleUrl bool   `json:bool`
 }
 
 type responseGenerateJson struct {
@@ -140,5 +141,9 @@ func generateHandler(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, errMessage)
 	}
 
-	return c.JSON(http.StatusOK, string(responseJson))
+	if post.SingleUrl {
+		return c.String(http.StatusOK, lib.Domain2Url(o.optApiDomain, o.optReverseProxyed, o.optHttps, o.optPort)+"/"+imagePath)
+	} else {
+		return c.JSON(http.StatusOK, string(responseJson))
+	}
 }
