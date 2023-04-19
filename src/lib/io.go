@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/fatih/color"
@@ -79,8 +80,29 @@ func RandomString(num int) string {
 	return string(str)
 }
 
-func Domain2Url(domain string) string {
-	return "https://" + domain
+func Domain2Url(domain string, isReverseProxyed bool, isHttps bool, port string) string {
+	var http string
+
+	if isHttps {
+		http = "https://"
+	} else {
+		http = "http://"
+	}
+
+	if isReverseProxyed {
+		return http + domain
+	} else {
+		if port != "" {
+			port, err := strconv.Atoi(port)
+			if err != nil {
+				ErrorExit(err)
+			}
+			return http + domain + ":" + strconv.Itoa(port)
+		} else {
+			return http + domain + ":3090"
+		}
+	}
+
 }
 
 // Turn array and index
