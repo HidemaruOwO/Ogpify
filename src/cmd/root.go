@@ -15,10 +15,12 @@ import (
 )
 
 type CmdOptions struct {
-	optApiDomain string
-	optWebDomain string
-	optPort      string
-	optDebug     bool
+	optApiDomain      string
+	optWebDomain      string
+	optPort           string
+	optDebug          bool
+	optReverseProxyed bool
+	optHttps          bool
 }
 
 var o = &CmdOptions{}
@@ -47,6 +49,8 @@ func init() {
 	RootCmd.Flags().StringVarP(&o.optApiDomain, "api-domain", "a", "", "API Domain option (Example: api.ogc.v-sli.me)")
 	RootCmd.Flags().StringVarP(&o.optWebDomain, "page-domain", "p", "", "Domain of the site used for the Post (Example: ogc.v-sli.me)")
 	RootCmd.Flags().BoolVarP(&o.optDebug, "debug", "d", false, "Enable this flag causes logging in debug mode")
+	RootCmd.Flags().BoolVarP(&o.optReverseProxyed, "isReverseProxyed", "", false, "Enable this flag causes logging in debug mode")
+	RootCmd.Flags().BoolVarP(&o.optHttps, "isHttps", "", false, "Enable this flag causes logging in debug mode")
 }
 
 func server() {
@@ -55,7 +59,7 @@ func server() {
 	e := echo.New()
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{lib.Domain2Url(o.optWebDomain), lib.Domain2Url(o.optApiDomain)},
+		AllowOrigins: []string{lib.Domain2Url(o.optWebDomain, o.optReverseProxyed, o.optHttps, o.optPort), lib.Domain2Url(o.optApiDomain, o.optReverseProxyed, o.optHttps, o.optPort)},
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
@@ -125,7 +129,7 @@ func generateHandler(c echo.Context) error {
 	lib.CreateImageFile(imagePath, syntheticImage)
 
 	responseStruct := responseGenerateJson{
-		URL: lib.Domain2Url(o.optApiDomain) + "/" + imagePath,
+		URL: lib.Domain2Url(o.optApiDomain, o.optReverseProxyed, o.optHttps, o.optPort) + "/" + imagePath,
 	}
 
 	responseJson, err := json.Marshal(responseStruct)
