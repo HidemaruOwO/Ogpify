@@ -49,8 +49,8 @@ func init() {
 	RootCmd.Flags().StringVarP(&o.optApiDomain, "api-domain", "a", "", "API Domain option (Example: api.ogc.v-sli.me)")
 	RootCmd.Flags().StringVarP(&o.optWebDomain, "page-domain", "p", "", "Domain of the site used for the Post (Example: ogc.v-sli.me)")
 	RootCmd.Flags().BoolVarP(&o.optDebug, "debug", "d", false, "Enable this flag causes logging in debug mode")
-	RootCmd.Flags().BoolVarP(&o.optReverseProxyed, "isReverseProxyed", "", false, "Enable this flag causes logging in debug mode")
-	RootCmd.Flags().BoolVarP(&o.optHttps, "isHttps", "", false, "Enable this flag causes logging in debug mode")
+	RootCmd.Flags().BoolVarP(&o.optReverseProxyed, "isReverseProxyed", "", false, "Enabling this flag removes the port of return. If you are using a reverse proxy, please enable this")
+	RootCmd.Flags().BoolVarP(&o.optHttps, "isHttps", "", false, "If you enable this flag, the url in the return value will start with https; if your API server is SSL-enabled, please enable this flag")
 }
 
 func server() {
