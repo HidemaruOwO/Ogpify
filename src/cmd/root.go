@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"path/filepath"
+	"strconv"
 
 	"github.com/HidemaruOwO/OGP-Generate-API/src/lib"
 	"github.com/fatih/color"
@@ -16,6 +17,7 @@ import (
 type CmdOptions struct {
 	optApiDomain string
 	optWebDomain string
+	optPort      string
 	optDebug     bool
 }
 
@@ -30,10 +32,10 @@ var RootCmd = &cobra.Command{
 		} else if o.optApiDomain != "" {
 			fmt.Printf("Need --page-domain flag\n")
 		} else {
-			fmt.Printf("OGC %s\n", lib.Version())
-			fmt.Printf("✨ Thank you for installing OGC!!\n")
+			fmt.Printf("Ogpify %s\n", lib.Version())
+			fmt.Printf("✨ Thank you for installing Ogpify!!\n")
 			fmt.Printf("Please run the help command for usage. \nRun:\n")
-			color.New(color.Bold).Printf("\t" + color.BlueString("$ ") + "ogc --help\n")
+			color.New(color.Bold).Printf("\t" + color.BlueString("$ ") + "ogpify --help\n")
 		}
 	},
 }
@@ -41,6 +43,7 @@ var RootCmd = &cobra.Command{
 func init() {
 	cobra.OnInitialize()
 	RootCmd.AddCommand()
+	RootCmd.Flags().StringVarP(&o.optPort, "port", "", "", "Port (Default: 3090)")
 	RootCmd.Flags().StringVarP(&o.optApiDomain, "api-domain", "a", "", "API Domain option (Example: api.ogc.v-sli.me)")
 	RootCmd.Flags().StringVarP(&o.optWebDomain, "page-domain", "p", "", "Domain of the site used for the Post (Example: ogc.v-sli.me)")
 	RootCmd.Flags().BoolVarP(&o.optDebug, "debug", "d", false, "Enable this flag causes logging in debug mode")
@@ -68,7 +71,16 @@ func server() {
 	e.GET("/", rootHandler)
 	e.POST("/generate", generateHandler)
 
-	e.Logger.Fatal(e.Start(":3090"))
+	if o.optPort != "" {
+		port, err := strconv.Atoi(o.optPort)
+		if err != nil {
+			lib.ErrorExit(err)
+		}
+
+		e.Logger.Fatal(e.Start(":" + strconv.Itoa(port)))
+	} else {
+		e.Logger.Fatal(e.Start(":3090"))
+	}
 }
 
 func rootHandler(c echo.Context) error {
