@@ -21,29 +21,34 @@ v1.0-beta2
 ### リポジトリのクローン
 
 ```bash
-git clone https://github.com/HidemaruOwO/OGP-Create
-cd ogp-create
+git clone https://github.com/HidemaruOwO/Ogpify
+cd Ogpify
 ```
 
 ### 🔨 ビルド
 
 ```bash
-go build src/ogc.go
+go build src/ogpify.go
 ```
 
 ### 💨 実行
 
 CORS 対応のため、`--page-domain`及び`--api-domain`フラグが必要です。  
-もし、このアプリが実行されているサーバーに紐づけられたドメインが `api.ogc.v-sli.me` で、POST するためのページのドメインが `ogc.v-sli.me`の場合は以下のコマンドのようになります。  
+もし、このアプリが実行されているサーバーに紐づけられたドメインが `api.ogpify.v-sli.me` で、POST するためのページのドメインが `ogpify.v-sli.me`の場合は以下のコマンドのようになります。  
 順次オプションの値を変更してください。  
-Local で完結させたい場合は値はお好きな値を入れてください。
+ローカルで完結させたい場合は不要です。  
+`example.com`などの適当な値を代入してください
+
 
 ```bash
-./ogc --api-domain api.ogc.v-sli.me --page-domain ogc.v-sli.me
+./ogpify --api-domain api.ogpify.v-sli.me --page-domain ogpify.v-sli.me
 ```
 
 これでサーバーが起動します。  
 試しに何かしら POST してみてください。
+
+デフォルトポートは`3090`です。
+
 
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{"text" : "これはテストです"}' http://127.0.0.1:3090/generate
