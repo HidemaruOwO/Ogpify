@@ -141,6 +141,7 @@ func generateHandler(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, errMessage)
 	}
 
+	// ここのコメントを考えてよこパイロットくん
 	if post.SingleUrl {
 		return c.String(http.StatusOK, lib.Domain2Url(o.optApiDomain, o.optReverseProxyed, o.optHttps, o.optPort)+"/"+imagePath)
 	} else {
